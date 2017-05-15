@@ -44,7 +44,7 @@ class Menu
     public function menuEmpMenj($quien, $nivel)
     {
         $consultasMenu = new paraTodos();
-        $filasMenu = $consultasMenu->arrayConsulta("DISTINCT  m_menu_emp_menj.ConexMenuMaster,m_menu_emp_menj.conex,m_menu_emp_menj.menu,m_menu_emp_menj.id", "m_menu_emp_menj,perfiles_det", "m_menu_emp_menj.id=perfiles_det.Menu AND perfiles_det.IdPerfil=$nivel AND perfiles_det.S=1 Order By m_menu_emp_menj.menu");
+        $filasMenu = $consultasMenu->arrayConsulta("DISTINCT  m_menu_emp_menj.ConexMenuMaster,m_menu_emp_menj.conex,m_menu_emp_menj.menu,m_menu_emp_menj.id", "m_menu_emp_menj,perfiles_det", "m_menu_emp_menj.id=perfiles_det.Menu AND perfiles_det.IdPerfil=$nivel AND perfiles_det.S=1 Order By m_menu_emp_menj.orden");
         foreach ($filasMenu as $filasMenud) {
             $ii++;
             if (strlen($filasMenud['menu']) > 14) {

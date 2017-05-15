@@ -37,6 +37,14 @@ class paraTodos
         $fecha_europea = "$dia/$mes/$ano";
         return $fecha_europea;
     }
+    public static function deconvertDate($fecha_americana)
+    {
+        $ano = substr($fecha_americana, 6, 4);
+        $mes = substr($fecha_americana, 3, 2);
+        $dia = substr($fecha_americana, 0, 2);
+        $fecha_europea = "$ano-$mes-$dia";
+        return $fecha_europea;
+    }    
     /**
      * Función que devuelve parte de una fecha de acuerdo con el formato que se pase
      * @param fecha      Fecha en Formato

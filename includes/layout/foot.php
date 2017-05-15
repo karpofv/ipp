@@ -1,3 +1,6 @@
+				</div>
+				<!-- .container -->
+			</section>
 </div>
 </div>
 <!-- template init -->
