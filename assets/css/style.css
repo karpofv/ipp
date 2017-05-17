@@ -10,3 +10,8 @@
 .logo > img {
     max-height: 80px;
 }
+
+#search {
+    border-bottom: 1px solid;
+    border-color: white;
+}

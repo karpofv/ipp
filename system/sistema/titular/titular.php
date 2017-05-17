@@ -10,37 +10,40 @@
 	$direc = $_POST[direc];
 	$status = $_POST[status];
     $selnac = $_POST[selnac];
+    $sueldo = $_POST[sueldo];            
+    $selindem = $_POST[selindem];            
+    $fecing = $_POST[fecing];            
+    $vice = $_POST[vice];            
+    $cargo = $_POST[cargo];            
+    $seltipper = $_POST[seltipper];            
+    $seltipdoc = $_POST[seltipdoc];
 	$eliminar = $_POST[eliminar];
-	$insertar = $_POST[insertar];
-    if ($insertar==""){
-        $insertar=1;
-    }
 	$editar = $_POST[editar];
-    if ($editar==""){
-        $editar=0;
-    }
-	$eliminar = $_POST[eliminar];
-    if ($eliminar==""){
-        $eliminar=0;
-    }
 	/*GUARDAR*/
-	if ($insertar==1 and $nombre !=""){
+	if ($editar==1 and $codigo=='' and $nombre !=""){
 		$consul = paraTodos::arrayConsultanum("tit_cedula", "titular", "tit_cedula='$cedemp'");
 		if ($consul>0){
 			paraTodos::showMsg("Titular ya está registrado", "alert-danger");
 		} else{
-			paraTodos::arrayInserte("tit_cedula, tit_nombres, tit_apellidos, tit_fecnac, tit_telhab, tit_telcel, tit_direccion, tit_correo, tit_status, tit_nac", "titular", "'$cedemp', '$nombre', '$apellido', '$fecnac', '$telhab', '$telcel', '$direc', '$correo', 1, $selnac");
+			$insertar = paraTodos::arrayInserte("tit_cedula, tit_nombres, tit_apellidos, tit_fecnac, tit_telhab, tit_telcel, tit_direccion, tit_correo, tit_status, tit_nac", "titular", "'$cedemp', '$nombre', '$apellido', '$fecnac', '$telhab', '$telcel', '$direc', '$correo', 1, $selnac");
+            if($insertar){
+                $consultit = paraTodos::arrayConsulta("tit_codigo", "titular", "tit_cedula=$cedemp");
+                foreach($consultit as $tit){
+                    $titcodigo = $tit[tit_codigo];
+                }
+                paraTodos::showMsg("$titcodigo, '$sueldo', $selindem, '$fecing', $vice, '$cargo', $seltipper, $seltipdoc", "", "");
+                $insertardp = paraTodos::arrayInserte("titp_titcodigo, titp_sueldo, titp_indem, titp_fecing, titp_viccodigo, titp_cargo, titp_tippersonal, tip_tipdocente", "titular_datosp", "$titcodigo, '$sueldo', $selindem, '$fecing', $vice, '$cargo', $seltipper, $seltipdoc");
+            }
 		}
-        $insertar=0;
 	}
 	/*UPDATE*/
-	if($editar == 1 and $nombre !=""){
+	if($editar == 1 and $codigo!='' and $nombre !=""){
 		paraTodos::arrayUpdate("tit_cedula=$cedemp, tit_fecnac='$fecnac', tit_nombres='$nombre', tit_apellidos='$apellido', tit_telhab='$telhab', tit_telcel='$telcel', tit_correo='$correo', tit_direccion='$direc', tit_status='$status', tit_nac=$selnac", "titular", "tit_codigo=$codigo");
-        $editar=0;
+        paraTodos::arrayUpdate("titp_sueldo='$sueldo', titp_indem='$selindem', titp_fecing='$fecing', titp_viccodigo='$vice', titp_cargo='$cargo', titp_tippersonal='$seltipper', tip_tipdocente='$seltipdoc'", "titular_datosp", "titp_titcodigo=$codigo");
 	}
 	/*MOSTRAR*/
-	if($editar == 1 and $nombre ==""){
-		$consulta = paraTodos::arrayConsulta("*", "titular", "tit_codigo=$codigo");
+	if($editar == 1 and $codigo!='' and $nombre ==""){
+		$consulta = paraTodos::arrayConsulta("*", "titular left join titular_datosp on titp_titcodigo=tit_codigo", "tit_codigo=$codigo");
 		foreach($consulta as $row){
             $codigo = $row[tit_codigo];
             $cedemp = $row[tit_cedula];
@@ -53,23 +56,32 @@
             $direc = $row[tit_direccion];
             $status = $row[tit_status];            
             $selnac = $row[tit_nac];
+            /*Datos personales*/
+            $sueldo = $row[titp_sueldo];            
+            $selindem = $row[titp_indem];            
+            $fecing = $row[titp_fecing];            
+            $vice = $row[titp_viccodigo];            
+            $cargo = $row[titp_cargo];            
+            $seltipper = $row[titp_tippersonal];            
+            $seltipdoc = $row[tip_tipdocente];            
 		}
 	}
 	/*ELIMINAR*/
 	if ($eliminar == 1){
 		paraTodos::arrayDelete("tit_codigo=$codigo", "titular");
-        $eliminar=0;
+        $eliminar='';
 	}
 ?>
     <div class="row">
         <div class="col-sm-12">
-            <h3>ADMINISTRACIÓN <small>TITULARES</small></h3> </div>
+            <h3>ADMINISTRACIÓN <small>TITULARES</small>                
+            </h3>
+        </div>
     </div>
     <!-- .row -->
     <div class="row" id="registro">
         <div class="col-sm-12">
-            <div class="with_background with_padding bottommargin_30">
-                <form id="frmtitular" class="" action="javascript:void(0)" method="post" onsubmit="$.ajax({
+            <form id="frmtitular" class="" action="javascript:void(0)" method="post" onsubmit="$.ajax({
 								url:'accion.php',
 								type:'POST',
 								data:{
@@ -85,9 +97,15 @@
 									direc 	: $('#txtdirec').val(),
 									status 	: $('#selstatus').val(),
 									selnac 	: $('#selnac').val(),
-									insertar: <?php echo $insertar?>,
-									editar: <?php echo $editar?>,
-									eliminar: <?php echo $eliminar?>,
+									sueldo 	: $('#txtsueldo').val(),
+									selindem 	: $('#selindem').val(),
+									fecing 	: $('#txtfecing').val(),
+									vice 	: $('#selvice').val(),
+									cargo 	: $('#txtcargo').val(),
+									seltipper 	: $('#seltipper').val(),
+									seltipdoc 	: $('#seltipdoc').val(),
+									editar: 1,
+									eliminar: '<?php echo $eliminar?>',
 									ver 	: 2
 								},
 								success : function (html) {
@@ -103,8 +121,13 @@
                                     $('#txtdirec').val('');
                                     $('#selstatus').val('');
                                     $('#selnac').val('');
+									$('#txtsueldo').val('');
+									$('#txtfecing').val('');
+									$('#txtcargo').val('');                                                                                             '' ;
                                 },
-							}); return false;">
+							}); return false;">            
+                <div class="with_background with_padding bottommargin_30">
+                    <h3>Datos Generales                <button class="btn btn-green pull-right" type="button" id="Vertodos">Ver Todos</button></h3>
                     <div class="row">
                         <div class="form-group">
                             <div class="col-sm-2">
@@ -155,10 +178,64 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-green" type="submit">Guardar</button>
-                    <button class="btn btn-green pull-right" type="button" id="Vertodos">Ver Todos</button>
-                </form>
-            </div>
+                </div>
+                <div class="with_background with_padding bottommargin_30">
+                    <h3>Datos laborales</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label class="control-label" for="txtcargo">Cargo</label>
+                                <input type="text" class="form-control" id="txtcargo" value="<?php echo $cargo?>" required>
+                            </div> 
+                            <div class="col-xs-2">
+                                <label class="control-label" for="txtfecing">Fec. de ingreso</label>
+                                <input type="date" class="form-control" id="txtfecing" value="<?php echo $fecing?>" required> 
+                            </div>                            
+                            <div class="col-sm-2">
+                                <label class="control-label" for="txtcedula">Sueldo</label>
+                                <input class="form-control" type="number" id="txtsueldo" min="1" value="<?php echo $sueldo;?>">
+                            </div>                            
+                            <div class="col-xs-2">
+                                <label class="control-label" for="selindem">Indemnización</label>
+                                <select class="form-control" id="selindem">
+                                    <option value="0">Seleccione %</option>                                    
+                                    <?php
+                                        combos::CombosSelect("1", "$selindem", "in_codigo, in_descripcion", "gen_indemnizacion", "in_codigo", "in_descripcion", "1=1");
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label class="control-label" for="selvice">Vicerrectorado</label>
+                                <select class="form-control" id="selvice">
+                                    <option value="0">Vicerrectorado</option>
+                                    <?php
+                                        combos::CombosSelect("1", "$vice", "vic_codigo, vic_descripcion", "vicerrectorado", "vic_codigo", "vic_descripcion", "1=1");
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label class="control-label" for="seltipper">Tipo de personal</label>
+                                <select class="form-control" id="seltipper">
+                                    <option value="0">Tipo de personal</option>
+                                    <?php
+                                        combos::CombosSelect("1", "$seltipper", "tip_codigo, tip_descripcion", "gen_tipo_personal", "tip_codigo", "tip_descripcion", "1=1");
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-xs-2 collapse" id="divselcdoc">
+                                <label class="control-label" for="seltipdoc">Tipo de docente</label>
+                                <select class="form-control" id="seltipdoc">
+                                    <option value="0">Tipo de docente</option>
+                                    <?php
+                                        combos::CombosSelect("1", "$seltipdoc", "tipdoc_codigo, tipdoc_descripcion", "gen_tipo_docente", "tipdoc_codigo", "tipdoc_descripcion", "1=1");
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-green" type="submit">Guardar</button>
+            </form>                
         </div>
     </div>
     <div class="row collapse" id="buscar">
@@ -222,8 +299,6 @@
 									dmn 	: <?php echo $idMenut;?>,
 									codtit 	: <?php echo $row[tit_codigo];?>,
 									editar: 1,
-									insertar: 0,
-									eliminar: 0,
 									ver 	: 2
 								},
 								success : function (html) {
@@ -240,8 +315,6 @@
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
 									codtit 	: <?php echo $row[tit_codigo];?>,
-									insertar: 0,
-									editar: 0,
 									eliminar: 1,
 									ver 	: 2
 								},
@@ -260,6 +333,13 @@
             </table>
     </div>
     <script type="text/javascript">
+        $("#seltipper").change(function(){
+            if($("#seltipper").val()==1){
+                $("#divselcdoc").removeClass("collapse");
+            } else {
+                $("#divselcdoc").addClass("collapse");
+            }            
+        });
         $("#Vertodos").click(function () {
             $("#registro").css("display", "none");
             $("#buscar").css("display", "block");

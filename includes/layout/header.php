@@ -1,18 +1,26 @@
 <div class="page_header_wrapper affix-top-wrapper">
     <header class="page_header header_color affix-top">
-        <div class="widget widget_search hidden-xs hidden-sm">
-            <form method="get" class="searchform form-inline" action="http://webdesign-finder.com/">
+        <div class="widget widget_search">
+            <form method="post" class="searchform form-inline" action="javascript:void(0)" onsubmit="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 370,
+                                    buscar  : $('#search').val()
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;">
                 <div class="form-group">
                     <label class="screen-reader-text" for="widget-search-header">Buscar por Cédula o Nombre:</label>
-                    <input id="widget-search-header" type="text" value="" name="search" class="form-control" placeholder="Buscar por cédula o nom..." data-cip-id="cIPJQ342845640"> </div>
-                <button type="submit" class="theme_button">Buscar</button>
+                    <input id="search" type="text" value="" class="form-control" placeholder="Buscar por cédula o nom..." required>
+                </div>
+                <button type="submit" class="theme_button"><i class="fa fa-search grey"></i></button>
             </form>
         </div>
         <div class="pull-right big-header-buttons">
             <ul class="inline-dropdown inline-block">
-                <li class="dropdown visible-xs-inline-block visible-sm-inline-block">
-                    <a href="#" class="search_modal_button header-button"> <i class="fa fa-search grey"></i> <span class="header-button-text">Buscar</span> </a>
-                </li>
                 <!-- user menu -->
                 <li class="dropdown user-dropdown-menu">
                     <a class="header-button" id="user-dropdown-menu" data-target="#" href="index.html" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
