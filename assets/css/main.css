@@ -3389,7 +3389,7 @@ body.boxed {
 }
 
 .with_background {
-	background-color: #f8f9f9;
+	background-color:#ffffff;
 	border-radius: 2px;
 }
 
@@ -5791,7 +5791,7 @@ body.active-side-header.slide-right .page_header_side {
 .ls.ms .with_background select,
 .ls.ms .with_background .form-control {
 	border-color: #f5f7fa;
-	background-color: #f5f7fa;
+	background-color: rgba(139, 9, 117, 0.1);;
 }
 
 .ls.ms .nav-tabs > li.active > a, .ls.ms .nav-tabs > li.active > a:hover, .ls.ms .nav-tabs > li.active > a:focus {

@@ -1,3 +1,6 @@
+<link href="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <?php
 	$codigo = $_POST[codtit];
 	$cedemp = $_POST[cedemp];
@@ -349,3 +352,10 @@
             $("#buscar").css("display", "none");
         });
     </script>
+            <script>
+    $('#titular').DataTable({
+        "language": {
+            "url": "<?php echo $ruta_base;?>assets/js/Spanish.json"
+        }
+    });
+</script>

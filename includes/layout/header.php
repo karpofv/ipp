@@ -1,7 +1,7 @@
 <div class="page_header_wrapper affix-top-wrapper">
     <header class="page_header header_color affix-top">
         <div class="widget widget_search">
-            <form method="post" class="searchform form-inline" action="javascript:void(0)" onsubmit="$.ajax({
+            <form method="post" class="form-inline" action="javascript:void(0)" onsubmit="$.ajax({
 								url:'accion.php',
 								type:'POST',
 								data:{

@@ -138,9 +138,9 @@ function windowLoadInit() {
 	});
 
 	//toTop
-	if (jQuery().UItoTop) {
+	/*if (jQuery().UItoTop) {
 		jQuery().UItoTop({ easingType: 'easeInOutQuart' });
-	}
+	}*/
 
 	
 	

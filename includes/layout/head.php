@@ -31,8 +31,8 @@
 <body class="admin">
     <div class="preloader">
 	   <div class="preloader_image"></div>
-	</div>    
-    <div id="ventanaVer"></div>
+	</div>
+    <div id="ventanaVer" class="admin modal-open"></div>    
 	<!-- wrappers for visual page editor and boxed version of template -->
 	<div id="canvas">
 		<div id="box_wrapper">    

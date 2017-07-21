@@ -3,6 +3,16 @@
 			</section>
 </div>
 </div>
+<script>
+    function cerrar() {
+        $("#alerta-msg").fadeOut(1000);
+        $("#alerta-msg").addClass("collapse");
+    }
+
+    function cerrarmodal() {
+        $("#ventanaVer").html('');
+    }
+</script>
 <!-- template init -->
 <script src="<?php echo $ruta_base;?>assets/js/compressed.js"></script>
 <script src="<?php echo $ruta_base;?>assets/js/main.js"></script>

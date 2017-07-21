@@ -187,7 +187,19 @@
                                 </div>
                             </div>
                             <div class="media-body media-middle">
-                                <span class="grey"><a href="javascript:void(0)">Generar carta Aval</a></span>
+                                <span class="grey"><a href="javascript:void(0)" onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 171,
+									codtit 	: <?php echo $codtit;?>,
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;">Generar carta Aval</a></span>
                             </div>
                         </div>
                         <?php
@@ -202,7 +214,19 @@
                                 </div>
                             </div>
                             <div class="media-body media-middle">
-                                <span class="grey"><a href="javascript:void(0)">Liquidación de ambulatorio</a></span>
+                                <span class="grey"><a href="javascript:void(0)" onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 173,
+									codtit 	: <?php echo $codtit;?>,
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;">Liquidación de ambulatorio</a></span>
                             </div>
                         </div>
                         <?php
@@ -217,7 +241,19 @@
                                 </div>
                             </div>
                             <div class="media-body media-middle">
-                                <span class="grey"><a href="javascript:void(0)">Reembolso</a></span>
+                                <span class="grey"><a href="javascript:void(0)" onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 172,
+									codtit 	: <?php echo $codtit;?>,
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;">Reembolso</a></span>
                             </div>
                         </div>
                         <?php

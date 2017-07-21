@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
-        <h3>ADMINISTRACIÓN <small>CASOS</small></h3> </div>
+        <h3>ADMINISTRACIÓN <small>CARTA AVAL</small></h3> </div>
 </div>
 <!-- .row -->
 <div class="row" id="buscar">
