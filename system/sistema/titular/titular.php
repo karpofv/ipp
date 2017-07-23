@@ -1,6 +1,12 @@
 <link href="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<link href="<?php echo $ruta_base; ?>assets/plugins/datatables/buttons.dataTables.min.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jszip.min.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/buttons.print.min.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/buttons.html5.min.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/buttons.colVis.min.js"></script>
 <?php
 	$codigo = $_POST[codtit];
 	$cedemp = $_POST[cedemp];
@@ -207,7 +213,7 @@
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-xs-2">
+                            <div class="col-xs-10">
                                 <label class="control-label" for="selvice">Vicerrectorado</label>
                                 <select class="form-control" id="selvice">
                                     <option value="0">Vicerrectorado</option>
@@ -245,8 +251,8 @@
         <div class="col-sm-12">
             <div class="with_background with_padding bottommargin_30">        
                 <button class="btn btn-green pull-right" type="button" id="Back">Regresar</button>                
-                <table class="table table-hover" id="titular">
-                    <thead>
+                <table class="display" cellspacing="0" width="100%" id="titular">
+                    <thead> 
                     <tr>
                         <td><strong>Cédula</strong></td>
                         <td><strong>Fec. Nacimiento</strong></td>
@@ -256,6 +262,8 @@
                         <td><strong>Telef. Celular</strong></td>
                         <td><strong>Correo</strong></td>
                         <td><strong>Dirección</strong></td>
+                        <td><strong>Vicerrectorado</strong></td>
+                        <td><strong>Tipo de empleado</strong></td>
                         <td><strong>Estatus</strong></td>
                         <td><strong>Editar</strong></td>
                         <td><strong>Eliminar</strong></td>
@@ -263,7 +271,10 @@
                 </thead>
                 <tbody>
                     <?php
-                        $consultit = paraTodos::arrayConsulta("*", "titular t, gen_status g", "t.tit_status=g.st_codigo");
+                        $consultit = paraTodos::arrayConsulta("*", "gen_status g,titular t 
+left join titular_datosp dp on titp_titcodigo=t.tit_codigo
+left join vicerrectorado v on dp.titp_viccodigo=v.vic_codigo
+left join gen_tipo_personal tp on  titp_tippersonal=tip_codigo", "t.tit_status=g.st_codigo");
                         foreach($consultit as $row){
     ?>
                         <tr>
@@ -290,6 +301,12 @@
                             </td>                            
                             <td>
                                 <?php echo utf8_decode($row[tit_direccion]);?>
+                            </td>
+                            <td>
+                                <?php echo utf8_decode($row[vic_descripcion]);?>
+                            </td>
+                            <td>
+                                <?php echo utf8_decode($row[tip_descripcion]);?>
                             </td>
                             <td>
                                 <?php echo utf8_decode($row[st_descripcion]);?>
@@ -352,10 +369,38 @@
             $("#buscar").css("display", "none");
         });
     </script>
-            <script>
-    $('#titular').DataTable({
-        "language": {
-            "url": "<?php echo $ruta_base;?>assets/js/Spanish.json"
-        }
-    });
-</script>
+    <script>        
+        $('#titular').DataTable({
+            language: {
+                "url": "<?php echo $ruta_base;?>assets/js/Spanish.json"
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    title: '',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    customize: function (win) {
+                        $(win.document.body).css('font-size', '8pt').prepend('<div><h4 style="text-align:center">Titulares registrados</h4></div>');
+                        $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                    }
+                },
+                {
+                    extend: 'colvis',
+                    text: 'Columnas visibles'
+                }
+            ],
+            scrollX: "true",
+            scrollY: "400px",
+            "scrollCollapse": true
+        });
+    </script>

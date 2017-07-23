@@ -1,3 +1,6 @@
+<link href="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <?php
 	$codigo = $_POST[codigo];
 	$nombre = $_POST[nombre];
@@ -89,7 +92,7 @@
         <div class="col-sm-12">
             <div class="with_background with_padding bottommargin_30">
                 <h3>Diagnósticos registrados</h3>
-                <table class="table table-hover" id="titular">
+                <table class="table table-hover" id="diagnostico">
                     <thead>
                         <tr>
                             <td><strong>Diagnóstico</strong></td>
@@ -161,3 +164,10 @@
             $("#imaximize").addClass("collapse");
         }
     </script>
+<script>
+    $('#diagnostico').DataTable({
+        "language": {
+            "url": "<?php echo $ruta_base;?>assets/js/Spanish.json"
+        }
+    });
+</script>

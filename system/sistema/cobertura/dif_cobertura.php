@@ -3,43 +3,53 @@
 <script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <?php
 	$codigo = $_POST[codigo];
-	$razon = $_POST[razon];
-	$numclinica = $_POST[numero];
-	$nombre = $_POST[nombre];
+    $monto = $_POST[monto];
+    $tipo = $_POST[tipo];
+    $indem = $_POST[indem];
 	$eliminar = $_POST[eliminar];
 	$editar = $_POST[editar];
 	/*GUARDAR*/
-	if($editar == 1 and $codigo=='' and $nombre !=""){
-		$consul = paraTodos::arrayConsultanum("cl_descripcion", "clinica", "cl_descripcion='$nombre'");
+	if($editar == 1 and $codigo=='' and $monto !=""){
+		$consul = paraTodos::arrayConsultanum("*", "cobertura_dif", "cobdf_caso=$tipo and cobdf_monto='$monto'");
 		if ($consul>0){
-			paraTodos::showMsg("Clínica ya está registrada bajo esta descripción", "alert-danger");
+			paraTodos::showMsg("Ya existe una configuración bajo estos parametros", "alert-danger");
 		} else{
-			paraTodos::arrayInserte("cl_razon, cl_numero,cl_descripcion", "clinica", "'$razon', '$numclinica','$nombre'");
+			paraTodos::arrayInserte("cobdf_monto, cobdf_caso,cobdf_porcentaje", "cobertura_dif", "'$monto', '$tipo','$indem'");
+            $monto = '';
+            $tipo = '';
+            $indem = '';
+            $codigo="";        
 		}
 	}
 	/*UPDATE*/
-	if($editar == 1 and $codigo!=''  and $nombre !=""){
-		paraTodos::arrayUpdate("cl_razon='$razon', cl_numero='$numclinica',cl_descripcion='$nombre'", "clinica", "cl_codigo=$codigo");
+	if($editar == 1 and $codigo!=''  and $monto !=""){
+		paraTodos::arrayUpdate("cobdf_monto='$monto', cobdf_caso='$tipo',cobdf_porcentaje='$indem'", "cobertura_dif", "cobdf_codigo=$codigo");
+        $monto = '';
+        $tipo = '';
+        $indem = '';
+        $codigo="";        
 	}
 	/*MOSTRAR*/
-	if($editar == 1 and $codigo!='' and $nombre ==""){
-		$consulta = paraTodos::arrayConsulta("*", "clinica", "cl_codigo=$codigo");
-		foreach($consulta as $row){
-            $razon = $row[cl_razon];
-            $numclinica = $row[cl_numero];
-            $nombre = $row[cl_descripcion];
+	if($editar == 1 and $codigo!='' and $monto ==""){
+        $consuldif = paraTodos::arrayConsulta("d.*", "cobertura_dif d", "cobdf_codigo=$codigo");
+		foreach($consuldif as $row){
+            $monto = $row[cobdf_monto];
+            $tipo = $row[cobdf_caso];
+            $indem = $row[cobdf_porcentaje];
 		}
 	}
 	/*ELIMINAR*/
 	if ($eliminar == 1){
-		paraTodos::arrayDelete("cl_codigo=$codigo", "clinica");
-        $eliminar='';
-        $codigo='';
+		paraTodos::arrayDelete("cobdf_codigo=$codigo", "cobertura_dif");
+        $monto = '';
+        $tipo = '';
+        $indem = '';
+        $codigo="";
 	}
 ?>
     <div class="row">
         <div class="col-sm-12">
-            <h3>ADMINISTRACIÓN <small>CLÍNICAS</small></h3>
+            <h3>ADMINISTRACIÓN <small>Diferencia de cobertura por caso</small></h3>
         </div>
     </div>
     <!-- .row -->    
@@ -49,15 +59,15 @@
                 <h3>Nuevos registros <a href="javascript:void(0)" class="pull-right" onclick="minimize();" id="iminimize"><i class="rt-icon2-chevron-up highlight fontsize_16"></i></a>
                     <a href="javascript:void(0)" class="collapse pull-right" onclick="maximize();" id="imaximize"><i class="rt-icon2-chevron-down highlight fontsize_16"></i></a></h3>
                 
-                <form id="frmbenef" class="" action="javascript:void(0)" method="post" onsubmit="$.ajax({
+                <form id="frmdifcaso" class="" action="javascript:void(0)" method="post" onsubmit="$.ajax({
 								url:'accion.php',
 								type:'POST',
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
 									codigo 	: $('#codigo').val(),
-									razon 	: $('#selrazon').val(),
-									numero 	: $('#txtcedula').val(),
-									nombre 	: $('#txtnombre').val(),
+									tipo 	: $('#seltipo').val(),
+									monto 	: $('#txtmonto').val(),
+									indem 	: $('#selindem').val(),
 									editar: '1',
 									eliminar: '<?php echo $eliminar?>',
 									ver 	: 2
@@ -72,27 +82,30 @@
 							}); return false;">
                     <div class="row">
                         <div class="form-group">
-                            <div class="col-xs-2">
-                                <label class="control-label" for="selrazon">Razón social</label>
-                                <select class="form-control" id="selrazon">
-                                    <option value="0">Opciones</option>
+                            <div class="col-xs-4">
+                                <input type="hidden" id="codigo" value="<?php echo $codigo;?>">                                                                
+                                <label class="control-label" for="seltipo">Tipo de caso</label>
+                                <select class="form-control" id="seltipo" required>
+                                    <option value="">Opciones</option>
                                     <?php
-                                        combos::CombosSelect("1", "$razon", "raz_codigo, raz_descripcion", "gen_razon_social", "raz_codigo", "raz_descripcion", "1=1");
+                                        combos::CombosSelect("1", "$tipo", "tipc_codigo, tipc_descripcion", "gen_tipo_caso", "tipc_codigo", "tipc_descripcion", "1=1");
                                     ?>
                                 </select>
-                            </div>                            
-                            <div class="col-sm-2">
-                                <label class="control-label" for="txtcedula">Nº</label>
-                                <input class="form-control" type="number" id="txtcedula" min="1" value="<?php echo $numclinica;?>"> 
-                                <input class="collapse" type="number" id="codigo" value="<?php echo $codigo;?>">                                 
                             </div>
-                            <div class="col-xs-8">
-                                <label class="control-label" for="txtnombre">Nombre</label>
-                                <input type="text" class="form-control" id="txtnombre" value="<?php echo $nombre?>" required> 
+                            <div class="col-xs-4">
+                                <label class="control-label" for="txtmonto">Monto limite</label>
+                                <input class="form-control" type="number" id="txtmonto" value="<?php echo $monto; ?>" required>
+                            </div>
+                            <div class="col-xs-4">
+                                <label class="control-label" for="selindem">Diferencia porcentual no cubierta</label>
+                                <select class="form-control" id="selindem">
+                                    <option value="0">0 %</option>                                    
+                                    <?php
+                                        combos::CombosSelect("1", "$indem", "in_codigo, in_descripcion", "gen_indemnizacion", "in_codigo", "in_descripcion", "1=1");
+                                    ?>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <br>
                         <button class="btn btn-green" type="submit">Guardar</button>
                     </div>
@@ -104,31 +117,31 @@
     <div class="row" id="buscar">
         <div class="col-sm-12">
             <div class="with_background with_padding bottommargin_30">
-                <h3>clínicas registradas</h3>
+                <h3>Registros cargados</h3>
                 <table class="table table-hover" id="clinica">
                     <thead>
                         <tr>
-                            <td><strong>Razón social</strong></td>
-                            <td><strong>Nº</strong></td>
-                            <td><strong>Nombre</strong></td>
+                            <td><strong>Caso</strong></td>
+                            <td><strong>Monto</strong></td>
+                            <td><strong>Porcentaje</strong></td>
                             <td><strong>Editar</strong></td>
                             <td><strong>Eliminar</strong></td>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                            $consultit = paraTodos::arrayConsulta("*", "clinica c, gen_razon_social rs", "c.cl_razon=rs.raz_codigo");
-                            foreach($consultit as $row){
-        ?>
+                        $consuldif = paraTodos::arrayConsulta("d.cobdf_codigo,tc.tipc_descripcion, d.cobdf_monto, i.in_descripcion", "cobertura_dif d, gen_tipo_caso tc, gen_indemnizacion i", "d.cobdf_caso=tc.tipc_codigo and cobdf_porcentaje=in_codigo");
+                        foreach($consuldif as $row){
+                        ?>
                             <tr>
                                 <td>
-                                    <?php echo $row[raz_descripcion];?>
+                                    <?php echo utf8_decode($row[tipc_descripcion]);?>
                                 </td>
-                                <td>
-                                    <?php echo $row[cl_numero];?>
+                                <td class="text-center">
+                                    <?php echo number_format($row[cobdf_monto], 2, ",", ".");?>
                                 </td>
-                                <td>
-                                    <?php echo utf8_decode($row[cl_descripcion]);?>
+                                <td class="text-center">
+                                    <?php echo $row[in_descripcion];?> %
                                 </td>
                             <td class="text-center">
                                 <a href="javascript:void(0)" onclick="$.ajax({
@@ -136,7 +149,7 @@
 								type:'POST',
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
-									codigo 	: <?php echo $row[cl_codigo];?>,                                                                      
+									codigo 	: <?php echo $row[cobdf_codigo];?>,                                                                      
 									editar: 1,
 									ver 	: 2
 								},
@@ -151,7 +164,7 @@
 								type:'POST',
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
-									codigo 	: <?php echo $row[cl_codigo];?>,
+									codigo 	: <?php echo $row[cobdf_codigo];?>,
 									eliminar: 1,                                                                    
 									ver 	: 2
 								},

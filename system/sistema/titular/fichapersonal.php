@@ -258,6 +258,34 @@
                         </div>
                         <?php
                             }
+                        $permisoservm = paratodos::arrayConsultanum("I", "perfiles_det pd", "pd.IdPerfil=$nivel and Submenu=183  and I=1");
+                            if($permisoservm>0){                        
+                        ?>
+                        <div class="media muted_background">
+                            <div class="media-left media-middle">
+                                <div class="teaser_icon label-info">
+                                    <i class="fa fa-file-o"></i>
+                                </div>
+                            </div>
+                            <div class="media-body media-middle">
+                                <span class="grey">
+                                    <a href="javascript:void(0)" onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 183,
+									codtit 	: <?php echo $codtit;?>,
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;">Servicios médicos</a></span>
+                            </div>
+                        </div>
+                        <?php
+                            }
                         ?>
                     </div>
                     <!-- .panel-group -->
@@ -336,7 +364,21 @@
                                 ?>
                                 <td class="text-center">
                                     <div class="teaser_icon label-success">
-                                        <a href="javascript:void(0)"><i class="fa fa-file"></i></a>
+                                        <a href="javascript:void(0)"
+                                           onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 171,
+									codtit 	: <?php echo $codtit;?>,
+									codben 	: <?php echo $row[ben_codigo];?>,
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;"><i class="fa fa-file"></i></a>
                                     </div>
                                 </td>  
                                 <?php
@@ -346,7 +388,21 @@
                                 ?>
                                 <td class="text-center">
                                     <div class="teaser_icon label-info">
-                                        <a href="javascript:void(0)"><i class="fa fa-file-text-o"></i></a>
+                                        <a href="javascript:void(0)"
+                                           onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 173,
+									codtit 	: <?php echo $codtit;?>,
+									codben 	: <?php echo $row[ben_codigo];?>,                                                    
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;"><i class="fa fa-file-text-o"></i></a>
                                     </div>
                                 </td>
                                 <?php
@@ -356,7 +412,21 @@
                                 ?>
                                 <td class="text-center">
                                     <div class="teaser_icon label-danger">
-                                        <a href="javascript:void(0)"><i class="fa fa-file-o"></i></a>
+                                        <a href="javascript:void(0)"
+                                           onclick="$.ajax({
+								url:'accion.php',
+								type:'POST',
+								data:{
+									dmn 	: 172,
+									codtit 	: <?php echo $codtit;?>,
+									codben 	: <?php echo $row[ben_codigo];?>,
+									buscar: 1,
+									ver 	: 2
+								},
+								success : function (html) {
+									$('#page-content').html(html);
+                                },
+							}); return false;"><i class="fa fa-file-o"></i></a>
                                     </div>
                                 </td>     
                                 <?php

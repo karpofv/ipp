@@ -17,14 +17,9 @@
 	$observacion = $_POST[observacion];
 	$editar = $_POST[editar];
 	$eliminar = $_POST[eliminar];
-    if($codben==""){
-        $solicitante=1;
-    } else {
-        $solicitante=2;
-    }
     /*INSERTAR*/
     if($editar==1 and $codigo=="" and $codtit!=""){
-        $insertar = paraTodos::arrayInserte("caso_tipo, caso_fecha, caso_titcodigo, caso_bencodigo, caso_monto, caso_indem, caso_cobertura, caso_descuento, caso_nocubre, caso_islr, caso_proveedor, caso_dignostico, caso_observacion", "casos", "1, '$fecha', $codtit, '$codben', '$monto', '$montoindem', '$cobertura', '$descuento', '$nocubre', '$islr', '$proveedor', '$diagnostico', '$observacion'");
+        $insertar = paraTodos::arrayInserte("caso_tipo, caso_fecha, caso_titcodigo, caso_bencodigo, caso_monto, caso_indem, caso_cobertura, caso_descuento, caso_nocubre, caso_islr, caso_proveedor, caso_dignostico, caso_observacion", "casos", "3, '$fecha', $codtit, '$codben', '$monto', '$montoindem', '$cobertura', '$descuento', '$nocubre', '$islr', '$proveedor', '$diagnostico', '$observacion'");
         if($insertar){
             paraTodos::showMsg("Registro exitoso.", "alert-success", "");
             $fecha ="";
@@ -45,8 +40,8 @@
     if($editar==1 and $codigo!="" and $monto!=""){
         $update = paraTodos::arrayUpdate("caso_fecha='$fecha', caso_monto='$monto', caso_indem='$montoindem', caso_cobertura='$cobertura', caso_descuento='$descuento', caso_nocubre='$nocubre', caso_islr='$islr', caso_proveedor='$proveedor', caso_dignostico='$diagnostico', caso_observacion='$observacion'", "casos", "caso_codigo=$codigo");
         if($update){
-            paraTodos::showMsg("Actualización exitosa.", "alert-success", "");
-        }
+            paraTodos::showMsg("Actualización exitosa.", "alert-success", "");       
+        }        
             $fecha ="";
             $monto = "";
             $montoindem = "";
@@ -58,7 +53,7 @@
             $codproveedor = "";
             $diagnostico = "";
             $observacion = "";
-            $codigo="";                       
+            $codigo="";                
     }
     /*ELIMINAR*/
     if($eliminar==1){
@@ -99,37 +94,37 @@
         $fecnac = paraTodos::convertDate($tit[tit_fecnac]);
         $fecing = paraTodos::convertDate($tit[titp_fecing]);
         /*Se busca entonces una en donde no aplique ningun filtro*/
-        $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=$solicitante or cobl_solicita=0)");        
+        $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=1 or cobl_solicita=0)");        
         if($consullimite>0){
-            $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=$solicitante or   cobl_solicita=0)");        
+            $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=1 or   cobl_solicita=0)");        
         } else {
             /*Se busca limite en donde el parametro especifico el tipo de personal*/        
-            $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=0 and (cobl_solicita=$solicitante or cobl_solicita=0)");
+            $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=0 and (cobl_solicita=1 or cobl_solicita=0)");
             if($consullimite>0){
-                $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=0 and (cobl_solicita=$solicitante or cobl_solicita=0)");
+                $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=$tit[titp_tippersonal] and cobl_vicerrectorado=0 and (cobl_solicita=1 or cobl_solicita=0)");
             } else {
                 /*Se busca limite en donde el parametro especifico el vicerrectorado*/        
-                $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=0 and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=$solicitante or cobl_solicita=0)");
+                $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=0 and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=1 or cobl_solicita=0)");
                 if($consullimite>0){
-                    $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=0 and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=$solicitante or cobl_solicita=0)");
+                    $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=0 and cobl_vicerrectorado=$tit[titp_viccodigo] and (cobl_solicita=1 or cobl_solicita=0)");
                 } else {
                     /*Se busca limite con todos los parametros*/
-                    $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=0 and cobl_vicerrectorado=0 and (cobl_solicita=$solicitante or cobl_solicita=0)");
+                    $consullimite = paraTodos::arrayConsultanum("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=0 and cobl_vicerrectorado=0 and (cobl_solicita=1 or cobl_solicita=0)");
                     if($consullimite>0){
-                        $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=1 and cobl_tipo_emp=0 and cobl_vicerrectorado=0 and (cobl_solicita=$solicitante or cobl_solicita=0)");
+                        $consullimite = paraTodos::arrayConsulta("cobl_monto", "cobertura_limite", "cobl_caso=4 and cobl_tipo_emp=0 and cobl_vicerrectorado=0 and (cobl_solicita=1 or cobl_solicita=0)");
                     };
                 }
             }
         }
         foreach($consullimite as $limite){
             $montolimite = $limite[cobl_monto];
-        }       
+        }
         /*Se buscan los casos que estan cargados deL año en curso*/
-        $consulcasos = paraTodos::arrayConsulta("sum(c.caso_indem) as total", "casos c", "c.caso_titcodigo=$codtit and c.caso_tipo=1 and c.caso_bencodigo='' and caso_status<>6");
+        $consulcasos = paraTodos::arrayConsulta("sum(c.caso_indem) as total", "casos c", "c.caso_titcodigo=$codtit and c.caso_tipo=4 and c.caso_bencodigo='' and caso_status<>6");
         foreach($consulcasos as $casos){
             $usado = $casos[total];
             $disponible = $montolimite-$usado;
-        }
+        }        
     }
 ?>
     <form method="post" id="frmmonto" action="javascript:void(0)" 
@@ -178,7 +173,7 @@
 								success : function (html) {
 									$('#page-content').html(html);
                                 },
-							}); return false;"><img src="<?php echo $ruta_base;?>assets/images/team/titular.png" alt="..."></a></div>
+                                    }); return false;"><img src="<?php echo $ruta_base;?>assets/images/team/titular.png" alt="..."></a></div>
                                 <div class="media-body">
                                     <h4><?php echo $titular;?><small> <?php echo $cargo;?></small><label class="teaser_icon alert-success  pull-right"><?php echo $status;?></label></h4>
                                     <div class="row">
@@ -202,7 +197,7 @@
                                                     ajaxSend: $('#ventanaVer').html(cargando),
                                                     data:{
                                                     titular :   <?php echo $codtit;?>,
-                                                    caso    :   1,
+                                                    caso    :   3,
                                                     dmn 	:   171,
                                                     act     :   4,
                                                     ver     :   2
@@ -214,10 +209,10 @@
                                         </a>
                                     </span>
                                 </div>
-                                        </div>
+                                        </div>                                        
                                     </div>
                                     <label>Fecha</label>
-                                    <input type="date" id="fecha" class="form-control" required value="<?php echo $fecha;?>">
+                                    <input type="date" id="fecha" class="form-control" required>
                                 </div>
                                 <input type="hidden" id="codigo"> 
                             </div>
@@ -263,7 +258,7 @@
                                             <div class="teaser_icon label-info fontsize_16"> <i class="fa fa-address" aria-hidden="true"></i></div>
                                         </div>
                                         <div class="media-body media-middle">
-                                            <input type="hidden" id="codprov" required value="<?php echo $codproveedor?>"> <strong class="grey" id="proveedor"><?php echo $proveedor;?></strong> </div>
+                                            <input type="hidden" id="codprov" required> <strong class="grey" id="proveedor"></strong> </div>
                                     </div>
                                 </li>
                             </ul>
@@ -306,7 +301,7 @@
                                             <div class="teaser_icon label-info fontsize_16"> <i class="fa fa-address-book-o" aria-hidden="true"></i></div>
                                         </div>
                                         <div class="media-body media-middle">
-                                            <input type="hidden" id="coddiag" required> <strong class="grey" id="diagnostico"><?php echo $diagnostico;?></strong> </div>
+                                            <input type="hidden" id="coddiag" required> <strong class="grey" id="diagnostico"></strong> </div>
                                     </div>
                                 </li>
                             </ul>
@@ -333,7 +328,7 @@
                                     monto   :   $('#txtmontoserv').val(),
                                     deduccion   :$('#descuentoad').val(),
                                     act     : 10,
-                                    actd    : 1,
+                                    actd    : 3,
                                     ver         :2                                         
 								},
 								success : function (html) {
@@ -351,7 +346,7 @@
                                     monto       : $('#txtmontoserv').val(),
                                     deduccion   : $('#descuentoad').val(),                                         
                                     act         : 10,
-                                    actd        : 1,
+                                    actd        : 3,
                                     ver         :2
 								},
 								success : function (html) {
@@ -384,12 +379,10 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="control-label" for="observacion">Observación</label>
-                            <input type="text" id="observacion" class="form-control" value="<?php echo $observacion;?>">
-                        </div>
+                            <input type="text" id="observacion" class="form-control"><?php echo $observacion;?> </div>
                     </div>
                     <div class="row">
                         <div class="colxs-12">
-                            
                             <button type="submit" class="btn btn-alert">Guardar</button>
                         </div>
                     </div>

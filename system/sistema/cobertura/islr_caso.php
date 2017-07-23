@@ -3,43 +3,48 @@
 <script type="text/javascript" src="<?php echo $ruta_base; ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <?php
 	$codigo = $_POST[codigo];
-	$razon = $_POST[razon];
-	$numclinica = $_POST[numero];
-	$nombre = $_POST[nombre];
+    $monto = $_POST[monto];
+    $tipo = $_POST[tipo];
 	$eliminar = $_POST[eliminar];
 	$editar = $_POST[editar];
 	/*GUARDAR*/
-	if($editar == 1 and $codigo=='' and $nombre !=""){
-		$consul = paraTodos::arrayConsultanum("cl_descripcion", "clinica", "cl_descripcion='$nombre'");
+	if($editar == 1 and $codigo=='' and $monto !=""){
+		$consul = paraTodos::arrayConsultanum("*", "islr_caso", "islr_caso=$tipo and islr_porcentaje='$monto'");
 		if ($consul>0){
-			paraTodos::showMsg("Clínica ya está registrada bajo esta descripción", "alert-danger");
+			paraTodos::showMsg("Ya existe una configuración bajo estos parametros", "alert-danger");
 		} else{
-			paraTodos::arrayInserte("cl_razon, cl_numero,cl_descripcion", "clinica", "'$razon', '$numclinica','$nombre'");
+			paraTodos::arrayInserte("islr_caso,islr_porcentaje", "islr_caso", " '$tipo','$monto'");
+            $monto = '';
+            $tipo = '';
+            $codigo="";        
 		}
 	}
 	/*UPDATE*/
-	if($editar == 1 and $codigo!=''  and $nombre !=""){
-		paraTodos::arrayUpdate("cl_razon='$razon', cl_numero='$numclinica',cl_descripcion='$nombre'", "clinica", "cl_codigo=$codigo");
+	if($editar == 1 and $codigo!=''  and $monto !=""){
+		paraTodos::arrayUpdate("islr_porcentaje='$monto', islr_caso='$tipo'", "islr_caso", "islr_codigo=$codigo");
+        $monto = '';
+        $tipo = '';
+        $codigo="";        
 	}
 	/*MOSTRAR*/
-	if($editar == 1 and $codigo!='' and $nombre ==""){
-		$consulta = paraTodos::arrayConsulta("*", "clinica", "cl_codigo=$codigo");
-		foreach($consulta as $row){
-            $razon = $row[cl_razon];
-            $numclinica = $row[cl_numero];
-            $nombre = $row[cl_descripcion];
+	if($editar == 1 and $codigo!='' and $monto ==""){
+        $consuldif = paraTodos::arrayConsulta("*", "islr_caso", "islr_codigo=$codigo");
+		foreach($consuldif as $row){
+            $monto = $row[islr_porcentaje];
+            $tipo = $row[islr_caso];
 		}
 	}
 	/*ELIMINAR*/
 	if ($eliminar == 1){
-		paraTodos::arrayDelete("cl_codigo=$codigo", "clinica");
-        $eliminar='';
-        $codigo='';
+		paraTodos::arrayDelete("islr_codigo=$codigo", "islr_caso");
+        $monto = '';
+        $tipo = '';
+        $codigo="";
 	}
 ?>
     <div class="row">
         <div class="col-sm-12">
-            <h3>ADMINISTRACIÓN <small>CLÍNICAS</small></h3>
+            <h3>ADMINISTRACIÓN <small>ISLR por caso</small></h3>
         </div>
     </div>
     <!-- .row -->    
@@ -47,52 +52,41 @@
         <div class="col-sm-12">
             <div class="with_background with_padding bottommargin_30">
                 <h3>Nuevos registros <a href="javascript:void(0)" class="pull-right" onclick="minimize();" id="iminimize"><i class="rt-icon2-chevron-up highlight fontsize_16"></i></a>
-                    <a href="javascript:void(0)" class="collapse pull-right" onclick="maximize();" id="imaximize"><i class="rt-icon2-chevron-down highlight fontsize_16"></i></a></h3>
-                
-                <form id="frmbenef" class="" action="javascript:void(0)" method="post" onsubmit="$.ajax({
+                    <a href="javascript:void(0)" class="collapse pull-right" onclick="maximize();" id="imaximize"><i class="rt-icon2-chevron-down highlight fontsize_16"></i></a>
+                </h3>
+                <form id="frmdifcaso" class="" action="javascript:void(0)" method="post" onsubmit="$.ajax({
 								url:'accion.php',
 								type:'POST',
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
 									codigo 	: $('#codigo').val(),
-									razon 	: $('#selrazon').val(),
-									numero 	: $('#txtcedula').val(),
-									nombre 	: $('#txtnombre').val(),
+									tipo 	: $('#seltipo').val(),
+									monto 	: $('#txtmonto').val(),
 									editar: '1',
 									eliminar: '<?php echo $eliminar?>',
 									ver 	: 2
 								},
 								success : function (html) {
 									$('#page-content').html(html);
-									$('#codigo').val('');
-									$('#selrazon').val('');
-									$('#txtcedula').val('');
-									$('#txtnombre').val('');
                                 },
 							}); return false;">
                     <div class="row">
                         <div class="form-group">
-                            <div class="col-xs-2">
-                                <label class="control-label" for="selrazon">Razón social</label>
-                                <select class="form-control" id="selrazon">
-                                    <option value="0">Opciones</option>
+                            <div class="col-xs-4">
+                                <input type="hidden" id="codigo" value="<?php echo $codigo;?>">                                                                
+                                <label class="control-label" for="seltipo">Tipo de caso</label>
+                                <select class="form-control" id="seltipo" required>
+                                    <option value="">Opciones</option>
                                     <?php
-                                        combos::CombosSelect("1", "$razon", "raz_codigo, raz_descripcion", "gen_razon_social", "raz_codigo", "raz_descripcion", "1=1");
+                                        combos::CombosSelect("1", "$tipo", "tipc_codigo, tipc_descripcion", "gen_tipo_caso", "tipc_codigo", "tipc_descripcion", "1=1");
                                     ?>
                                 </select>
-                            </div>                            
-                            <div class="col-sm-2">
-                                <label class="control-label" for="txtcedula">Nº</label>
-                                <input class="form-control" type="number" id="txtcedula" min="1" value="<?php echo $numclinica;?>"> 
-                                <input class="collapse" type="number" id="codigo" value="<?php echo $codigo;?>">                                 
                             </div>
-                            <div class="col-xs-8">
-                                <label class="control-label" for="txtnombre">Nombre</label>
-                                <input type="text" class="form-control" id="txtnombre" value="<?php echo $nombre?>" required> 
+                            <div class="col-xs-4">
+                                <label class="control-label" for="txtmonto">% ISLR</label>
+                                <input class="form-control" type="number" id="txtmonto" min="0" max="100" step="any" value="<?php echo $monto; ?>" required>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <br>
                         <button class="btn btn-green" type="submit">Guardar</button>
                     </div>
@@ -104,31 +98,27 @@
     <div class="row" id="buscar">
         <div class="col-sm-12">
             <div class="with_background with_padding bottommargin_30">
-                <h3>clínicas registradas</h3>
+                <h3>Registros cargados</h3>
                 <table class="table table-hover" id="clinica">
                     <thead>
                         <tr>
-                            <td><strong>Razón social</strong></td>
-                            <td><strong>Nº</strong></td>
-                            <td><strong>Nombre</strong></td>
+                            <td><strong>Caso</strong></td>
+                            <td><strong>Porcentaje</strong></td>
                             <td><strong>Editar</strong></td>
                             <td><strong>Eliminar</strong></td>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                            $consultit = paraTodos::arrayConsulta("*", "clinica c, gen_razon_social rs", "c.cl_razon=rs.raz_codigo");
-                            foreach($consultit as $row){
-        ?>
+                        $consuldif = paraTodos::arrayConsulta("*", "islr_caso i, gen_tipo_caso tc", "i.islr_caso=tc.tipc_codigo");
+                        foreach($consuldif as $row){
+                        ?>
                             <tr>
                                 <td>
-                                    <?php echo $row[raz_descripcion];?>
+                                    <?php echo utf8_decode($row[tipc_descripcion]);?>
                                 </td>
-                                <td>
-                                    <?php echo $row[cl_numero];?>
-                                </td>
-                                <td>
-                                    <?php echo utf8_decode($row[cl_descripcion]);?>
+                                <td class="text-center">
+                                    <?php echo number_format($row[islr_porcentaje], 2, ",", ".");?>
                                 </td>
                             <td class="text-center">
                                 <a href="javascript:void(0)" onclick="$.ajax({
@@ -136,7 +126,7 @@
 								type:'POST',
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
-									codigo 	: <?php echo $row[cl_codigo];?>,                                                                      
+									codigo 	: <?php echo $row[islr_codigo];?>,                                                                      
 									editar: 1,
 									ver 	: 2
 								},
@@ -151,7 +141,7 @@
 								type:'POST',
 								data:{
 									dmn 	: <?php echo $idMenut;?>,
-									codigo 	: <?php echo $row[cl_codigo];?>,
+									codigo 	: <?php echo $row[islr_codigo];?>,
 									eliminar: 1,                                                                    
 									ver 	: 2
 								},
